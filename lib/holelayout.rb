@@ -16,5 +16,4 @@ class HoleLayout
     end
     return array
   end
-
 end

@@ -1,6 +1,7 @@
 require_relative '../lib/holelayout.rb'
 require_relative '../lib/scores.rb'
-require_relative '../lib/output.rb'
+require_relative '../lib/player.rb'
+require_relative '../lib/scorecard.rb'
 
 describe 'Golf' do
   let(:score_path) {'/Users/jhylau/dropbox/launch_academy/golf/lib/scores.txt'}
@@ -46,14 +47,40 @@ describe 'Golf' do
   end
 
 
-  describe Output do
-
+  describe ScoreCard do
       context 'outputs individual results' do
         it 'takes in an instance of holelayout and an instance of score' do
-          output = Output.new(Scores.new(score_path),HoleLayout.new(hole_path))
-          expect(output).to be_true
-       end
+          scorecard = ScoreCard.new(Scores.new(score_path),HoleLayout.new(hole_path))
+          expect(scorecard).to be_true
+        end
+
+        it 'returns the number of players' do
+          scorecard = ScoreCard.new(Scores.new(score_path),HoleLayout.new(hole_path))
+          expect(scorecard.players_number).to be(Scores.new(score_path).parse.length)
+        end
+
+        it 'returns an array of instances of players'
      end
+  end
+
+  describe Player do 
+    it 'reads in a hash' do
+      hash = {}
+      player = Player.new(hash)
+      expect(player).to be_true
+    end
+
+    it 'returns player name' do
+      hash = {'Jon Lau' => [1,2,3,4,5]}
+      player = Player.new(hash)
+      expect(player.name).to eql(hash.keys)
+    end
+
+    it 'returns an array of player scores' do
+      hash = {'Jon Lau' => [1,2,3,4,5]}
+      player = Player.new(hash)
+      expect(player.golf_score).to eql(hash.values)
+    end
   end
 end
 

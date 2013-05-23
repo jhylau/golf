@@ -7,7 +7,7 @@ class HoleLayout
     @filepath = filepath
   end
 
-  def load
+  def parse
     array = []
     CSV.foreach(filepath) do |line|
       line.each do |a|

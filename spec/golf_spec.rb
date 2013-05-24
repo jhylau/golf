@@ -1,110 +1,88 @@
 require_relative '../lib/holelayout.rb'
-require_relative '../lib/scores.rb'
-require_relative '../lib/player.rb'
+require_relative '../lib/playerresults.rb'
 require_relative '../lib/scorecard.rb'
-require_relative '../lib/printholeresults.rb'
 
 describe 'Golf' do
-  let(:score_path) {'/Users/jhylau/dropbox/launch_academy/golf/lib/scores.txt'}
-  let(:hole_path) {'/Users/jhylau/dropbox/launch_academy/golf/lib/golf_score.txt'}
-
+  let(:score_path) {'/Users/jhylau/dropbox/launch_academy/golf/lib/default_scores.txt'}
+  let(:hole_path) {'/Users/jhylau/dropbox/launch_academy/golf/lib/default_hole_layout.txt'}
+  
   describe HoleLayout do
+    let(:holelayout) {HoleLayout.new(hole_path)}
     it 'reads in a file path' do
-      holelayout = HoleLayout.new(hole_path)
       expect(holelayout).to be_true
     end
 
     context 'parsing data' do
       it 'returns an array of scores' do
-        holelayout = HoleLayout.new(hole_path)
         expect(holelayout.parse.class).to eq(Array)
       end
 
       it 'returns an array with 18 elements' do
-        holelayout = HoleLayout.new(hole_path)
         expect(holelayout.parse.length).to eq(18)
       end
     end
   end
 
-
-  describe Scores do
+  describe PlayerResults do
+      let(:player_results) {PlayerResults.new(score_path)}
       context 'parsing data' do
           it 'reads in a file path' do
-            scores = Scores.new(score_path)
-            expect(scores).to be_true
+            expect(player_results).to be_true
           end
 
-          it 'returns an array of player names followed by scores' do
-            scores = Scores.new(score_path)
-            expect(scores.parse.class).to eq(Array)
+          it 'returns an array of player names and scores' do
+            expect(player_results.parse.class).to eq(Array)
           end
 
           it 'returns an array with 3 elements' do
-            scores = Scores.new(score_path)
-           expect(scores.parse.length).to eq(3)
+           expect(player_results.parse.length).to eq(3)
           end
        end
   end
 
-
   describe ScoreCard do
-        it 'takes in an instance of holelayout and an instance of score' do
-          scorecard = ScoreCard.new(Scores.new(score_path),HoleLayout.new(hole_path))
-          expect(scorecard).to be_true
-        end
+      let(:player_info) do 
+        player_results = PlayerResults.new(score_path)
+        player_info = player_results.parse
+        return player_info
+      end
 
-        it 'returns the number of players' do
-          scorecard = ScoreCard.new(Scores.new(score_path),HoleLayout.new(hole_path))
-          expect(scorecard.players_number).to be(Scores.new(score_path).parse.length)
-        end
+      let(:holelayout) {HoleLayout.new(hole_path).parse}
 
-        it 'outputs the results for each player' do
-          scorecard = ScoreCard.new(Scores.new(score_path),HoleLayout.new(hole_path))
-          expect(scorecard.output).to include('Total score')
-        end
+      let(:scorecard) {ScoreCard.new(player_info,holelayout)}
+
+      it 'takes in an array of  holelayout and an instance of score' do
+        expect(scorecard).to be_true
+      end
+
+      it 'returns the number of players' do
+        expect(scorecard.number_of_players).to be(3)
+      end
+
+      it 'returns an array of player names' do
+        expect(scorecard.player_names).to include('Tiger Woods','Lau','Bubba Wats')
+      end
+
+      it 'returns an array of player scores' do
+        expect(scorecard.player_scores.class).to be(Array)
+      end
+
+      it 'returns hole results as a string' do
+        expect(scorecard.hole_results(1,1,'Par')).to include('1','1','Par')
+      end
+
+      it 'converts par_score and player_score to string' do     
+        expect(scorecard.convert_score_to_name(1,1)).to include('Par')
+      end
+
+      it 'calculates total scores' do
+        expect(scorecard.calculate_total_score([1,1,1])).to be(3)
+      end
+
+      it 'has an output method' do
+        expect(scorecard.output).to be_true
+      end
   end
 
-  describe PrintHoleResults do 
-    let(:score) {3}
-    let(:hole_number) {1}
-    let(:par_score) {5}
-    it 'takes in a of score and a hole number and the par for the hole' do
-      holeinfo = PrintHoleResults.new(score, hole_number, par_score)
-      expect(holeinfo).to be_true
-    end
-
-    it 'returns special names' do
-      holeinfo = PrintHoleResults.new(score, hole_number, par_score)
-      expect(holeinfo.score_name.class).to be(String)
-    end
-
-    it 'outputs a line' do
-      holeinfo = PrintHoleResults.new(score, hole_number, par_score)
-      puts holeinfo.output
-      expect(holeinfo.output).to include('Hole')
-    end
-
-  end
-
-  describe Player do 
-    it 'reads in a hash' do
-      hash = {}
-      player = Player.new(hash)
-      expect(player).to be_true
-    end
-
-    it 'returns player name' do
-      hash = {'Jon Lau' => [1,2,3,4,5]}
-      player = Player.new(hash)
-      expect(player.name).to eql(hash.keys)
-    end
-
-    it 'returns an array of player scores' do
-      hash = {'Jon Lau' => [1,2,3,4,5]}
-      player = Player.new(hash)
-      expect(player.golf_score).to eql(hash.values)
-    end
-  end
 end
 

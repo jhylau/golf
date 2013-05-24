@@ -2,6 +2,7 @@ require_relative '../lib/holelayout.rb'
 require_relative '../lib/scores.rb'
 require_relative '../lib/player.rb'
 require_relative '../lib/scorecard.rb'
+require_relative '../lib/printholeresults.rb'
 
 describe 'Golf' do
   let(:score_path) {'/Users/jhylau/dropbox/launch_academy/golf/lib/scores.txt'}
@@ -48,7 +49,6 @@ describe 'Golf' do
 
 
   describe ScoreCard do
-      context 'outputs individual results' do
         it 'takes in an instance of holelayout and an instance of score' do
           scorecard = ScoreCard.new(Scores.new(score_path),HoleLayout.new(hole_path))
           expect(scorecard).to be_true
@@ -59,8 +59,32 @@ describe 'Golf' do
           expect(scorecard.players_number).to be(Scores.new(score_path).parse.length)
         end
 
-        it 'returns an array of instances of players'
-     end
+        it 'outputs the results for each player' do
+          scorecard = ScoreCard.new(Scores.new(score_path),HoleLayout.new(hole_path))
+          expect(scorecard.output).to include('Total score')
+        end
+  end
+
+  describe PrintHoleResults do 
+    let(:score) {3}
+    let(:hole_number) {1}
+    let(:par_score) {5}
+    it 'takes in a of score and a hole number and the par for the hole' do
+      holeinfo = PrintHoleResults.new(score, hole_number, par_score)
+      expect(holeinfo).to be_true
+    end
+
+    it 'returns special names' do
+      holeinfo = PrintHoleResults.new(score, hole_number, par_score)
+      expect(holeinfo.score_name.class).to be(String)
+    end
+
+    it 'outputs a line' do
+      holeinfo = PrintHoleResults.new(score, hole_number, par_score)
+      puts holeinfo.output
+      expect(holeinfo.output).to include('Hole')
+    end
+
   end
 
   describe Player do 

@@ -10,4 +10,8 @@ class Player
   def golf_score
     @information.values
   end
+
+  def total_score
+  end
+
 end

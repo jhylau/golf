@@ -1,6 +1,7 @@
 require_relative '../lib/holelayout.rb'
 require_relative '../lib/playerresults.rb'
 require_relative '../lib/scorecard.rb'
+require_relative '../lib/leaderboard.rb'
 
 describe 'Golf' do
   let(:score_path) {'/Users/jhylau/dropbox/launch_academy/golf/lib/default_scores.txt'}
@@ -43,28 +44,23 @@ describe 'Golf' do
   describe ScoreCard do
       let(:player_info) do 
         player_results = PlayerResults.new(score_path)
-        player_info = player_results.parse
-        return player_info
+        player_info = player_results.parse[0]
       end
 
       let(:holelayout) {HoleLayout.new(hole_path).parse}
 
       let(:scorecard) {ScoreCard.new(player_info,holelayout)}
 
-      it 'takes in an array of  holelayout and an instance of score' do
+      it 'takes in an array of holelayout and a hash with player info' do
         expect(scorecard).to be_true
       end
 
-      it 'returns the number of players' do
-        expect(scorecard.number_of_players).to be(3)
-      end
-
       it 'returns an array of player names' do
-        expect(scorecard.player_names).to include('Tiger Woods','Lau','Bubba Wats')
+        expect(scorecard.player_name).to include('Tiger Woods')
       end
 
       it 'returns an array of player scores' do
-        expect(scorecard.player_scores.class).to be(Array)
+        expect(scorecard.scores.class).to be(Array)
       end
 
       it 'returns hole results as a string' do
@@ -76,13 +72,50 @@ describe 'Golf' do
       end
 
       it 'calculates total scores' do
-        expect(scorecard.calculate_total_score([1,1,1])).to be(3)
+        expect(scorecard.total_score).to be(72)
+      end
+
+      it 'calculates score below par' do
+        expect(scorecard.score_below_par).to be(0)
       end
 
       it 'has an output method' do
-        expect(scorecard.output).to be_true
+        expect(scorecard.output).to be_nil
       end
-  end
+    end
+
+    describe LeaderBoard do
+      let(:player_info) do 
+        player_results = PlayerResults.new(score_path)
+        player_info = player_results.parse
+      end
+
+      let(:holelayout) {HoleLayout.new(hole_path).parse}
+
+      let(:scorecard) {ScoreCard.new(player_info[0],holelayout)}
+
+      let(:scorecards_array) do
+        scorecards_array = []
+        player_info.length.times do |i|
+          scorecards_array << ScoreCard.new(player_info[i],holelayout)
+        end
+        return scorecards_array
+      end
+
+      it 'takes in an array of scorecards' do
+        leaderboard = LeaderBoard.new(scorecards_array)
+      end
+
+      it 'returns a sorted array of scores below par' do
+        leaderboard = LeaderBoard.new(scorecards_array)
+        expect(leaderboard.scores).to eql([0,1,2])
+      end
+
+      it 'outputs information' do
+        leaderboard = LeaderBoard.new(scorecards_array)
+        expect(leaderboard.output).to be_true
+      end
+    end
 
 end
 

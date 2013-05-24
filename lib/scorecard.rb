@@ -5,28 +5,16 @@ class ScoreCard
     @holelayout = holelayout
   end
 
-  def number_of_players
-    player_info.length
-  end
-
   def player_info
     @player_info
   end
 
-  def player_names
-    player_names = []
-    player_info.each do |item|
-      player_names << item.keys
-    end
-    return player_names.flatten
+  def player_name
+    player_name = player_info.keys
   end
 
-  def player_scores
-    player_scores = []
-    player_info.each do |item|
-      player_scores << item.values.flatten
-    end
-    return player_scores
+  def scores
+    scores = player_info.values.flatten
   end
 
   def convert_score_to_name(par_score,player_score)
@@ -55,7 +43,7 @@ class ScoreCard
     "Hole #{hole_number}: #{player_score} #{score_name}"
   end
 
-  def calculate_total_score(scores)
+  def total_score
       total_score = 0
       scores.each { |a| total_score +=a.to_i }
       total_score
@@ -73,15 +61,14 @@ class ScoreCard
     player_results_text
   end
 
-  def output
-    number_of_players.times do |i|
-      name = player_names[i]
-      scores = player_scores[i]
-      total_score = calculate_total_score(scores)
-      puts name
-      puts player_results_as_array(scores, holelayout)
-      puts "Total score is #{total_score}"
-    end
+  def score_below_par
+    score_below_par =  total_score - 72
   end
 
+  def output
+      puts player_name
+      puts player_results_as_array(scores, holelayout)
+      puts "Total score is #{total_score}"
+      puts score_below_par
+  end
 end

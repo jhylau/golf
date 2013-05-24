@@ -59,6 +59,10 @@ describe 'Golf' do
         expect(scorecard.player_name).to include('Tiger Woods')
       end
 
+      it 'returns an array of player info' do
+        expect(scorecard.player_name.length).to be(1)
+      end
+
       it 'returns an array of player scores' do
         expect(scorecard.scores.class).to be(Array)
       end
@@ -69,6 +73,10 @@ describe 'Golf' do
 
       it 'converts par_score and player_score to string' do     
         expect(scorecard.convert_score_to_name(1,1)).to include('Par')
+      end
+
+      it 'returns an array of player results strings' do
+        expect(scorecard.player_results_as_array.length).to be(18)
       end
 
       it 'calculates total scores' do

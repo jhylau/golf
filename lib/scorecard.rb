@@ -49,7 +49,7 @@ class ScoreCard
       total_score
   end
 
-  def player_results_as_array(scores, holelayout)
+  def player_results_as_array
     player_results_text = []
     18.times do |i|
         score = scores[i].to_i
@@ -67,7 +67,7 @@ class ScoreCard
 
   def output
       puts player_name
-      puts player_results_as_array(scores, holelayout)
+      puts player_results_as_array
       puts "Total score is #{total_score}"
       puts score_below_par
   end

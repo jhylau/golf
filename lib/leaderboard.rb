@@ -1,4 +1,6 @@
 require_relative 'scorecard'
+require_relative 'playerresults'
+require_relative 'holelayout'
 
 class LeaderBoard
   def initialize(scorecard_array)
@@ -29,3 +31,17 @@ class LeaderBoard
     end    
   end
 end
+
+# score_path = '/Users/jhylau/dropbox/launch_academy/golf/lib/default_scores.txt'
+# hole_path = '/Users/jhylau/dropbox/launch_academy/golf/lib/default_hole_layout.txt'
+
+# player_results = PlayerResults.new(score_path).results
+# holelayout = HoleLayout.new(hole_path).parse
+
+# scorecards_array = []
+# player_results.length.times do |i|
+#   scorecards_array << ScoreCard.new(player_results[i],holelayout)
+# end
+
+# leaderboard = LeaderBoard.new(scorecards_array)
+# leaderboard.output

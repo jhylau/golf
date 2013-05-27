@@ -2,8 +2,9 @@ require_relative '../lib/holelayout.rb'
 require_relative '../lib/playerresults.rb'
 require_relative '../lib/scorecard.rb'
 require_relative '../lib/leaderboard.rb'
+require 'pry'
 
-describe 'Golf' do
+describe 'Golf Assignment:' do
   let(:score_path) {'/Users/jhylau/dropbox/launch_academy/golf/lib/default_scores.txt'}
   let(:hole_path) {'/Users/jhylau/dropbox/launch_academy/golf/lib/default_hole_layout.txt'}
   
@@ -15,11 +16,16 @@ describe 'Golf' do
 
     context 'parsing data' do
       it 'returns an array of scores' do
-        expect(holelayout.parse.class).to eq(Array)
+        expect(holelayout.course_numbers.class).to eq(Array)
       end
 
       it 'returns an array with 18 elements' do
-        expect(holelayout.parse.length).to eq(18)
+        expect(holelayout.course_numbers.length).to eq(18)
+      end
+
+      it 'returns an error message if the input is incorrect length' do
+        hole_path_incorrect = '/Users/jhylau/dropbox/launch_academy/golf/lib/default_incorrect_layout.txt'
+        expect {HoleLayout.new(hole_path_incorrect)}.to raise_error 'Check your inputs'
       end
     end
   end
@@ -32,24 +38,26 @@ describe 'Golf' do
           end
 
           it 'returns an array of player names and scores' do
-            expect(player_results.parse.class).to eq(Array)
+            expect(player_results.results.class).to eq(Array)
           end
 
           it 'returns an array with 3 elements' do
-           expect(player_results.parse.length).to eq(3)
+           expect(player_results.results.length).to eq(3)
+          end
+
+          it 'returns an error message if the input is incorrect length' do
+            default_incorrect_scores = '/Users/jhylau/dropbox/launch_academy/golf/lib/default_incorrect_scores.txt'
+            expect {PlayerResults.new(default_incorrect_scores)}.to raise_error 'Check your inputs'
           end
        end
   end
 
   describe ScoreCard do
-      let(:player_info) do 
-        player_results = PlayerResults.new(score_path)
-        player_info = player_results.parse[0]
-      end
+      let(:player_info) {PlayerResults.new(score_path).results}
 
-      let(:holelayout) {HoleLayout.new(hole_path).parse}
+      let(:holelayout) {HoleLayout.new(hole_path).course_numbers}
 
-      let(:scorecard) {ScoreCard.new(player_info,holelayout)}
+      let(:scorecard) {ScoreCard.new(player_info[0],holelayout)}
 
       it 'takes in an array of holelayout and a hash with player info' do
         expect(scorecard).to be_true
@@ -94,11 +102,10 @@ describe 'Golf' do
 
     describe LeaderBoard do
       let(:player_info) do 
-        player_results = PlayerResults.new(score_path)
-        player_info = player_results.parse
+        player_results = PlayerResults.new(score_path).results
       end
 
-      let(:holelayout) {HoleLayout.new(hole_path).parse}
+      let(:holelayout) {HoleLayout.new(hole_path).course_numbers}
 
       let(:scorecard) {ScoreCard.new(player_info[0],holelayout)}
 
